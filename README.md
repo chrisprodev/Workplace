@@ -1,11 +1,11 @@
-### Chat Re-design
+## Chat Re-design
 
-## Screens
+### Screens
 
 Login.<br />
 Sign up.<br />
 Chat.<br />
 
-## Components
+### Components
 
 Comming soon.

@@ -1,85 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { useHistory, Link } from "react-router-dom";
-import GoogleColor from "./icons/GoogleColor";
 import styled from "styled-components";
 
-const Login = () => {
-  let history = useHistory();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-
-  return (
-    <Container>
-      <img src="/images/workplace.svg" alt="workplace_logo" />
-      <Header>
-        <h2>Log in to your account</h2>
-      </Header>
-
-      <MainWrapper>
-        <SocialBtn
-        //onClick={logInGoogle}
-        >
-          <GoogleColor />
-          Log in with Google
-        </SocialBtn>
-        <Divider>
-          <hr />
-          <p>or</p>
-          <hr />
-        </Divider>
-        <FormContainer
-        //onSubmit={handleSubmit(onSubmit)}
-        >
-          <label htmlFor="email">Email</label>
-          <input
-            type="text"
-            id="email"
-            placeholder="Enter your email here."
-            {...register("email", {
-              required: true,
-              pattern:
-                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-            })}
-          />
-          {errors.email && errors.email.type === "pattern" && (
-            <SpanError>Invalid email</SpanError>
-          )}
-          <label htmlFor="pass">Password</label>
-          <input
-            type="password"
-            id="pass"
-            {...register("pass", {
-              required: true,
-              minLength: 6,
-            })}
-          />
-          {errors.pass && errors.pass.type === "minLength" && (
-            <SpanError>Minimun length 6 characters</SpanError>
-          )}
-          <SubmitBtn type="submit">Log in</SubmitBtn>
-        </FormContainer>
-      </MainWrapper>
-      <SignInMsg>
-        Don't have an account?
-        <Link
-          to="/"
-          //onClick={() => dispatch(setError(null))}
-        >
-          Sign up
-        </Link>
-      </SignInMsg>
-    </Container>
-  );
-};
-
-export default Login;
-
-const Container = styled.div`
+export const Container = styled.div`
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -102,7 +23,7 @@ const Container = styled.div`
   }
 `;
 
-const MainWrapper = styled.div`
+export const MainWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -118,7 +39,7 @@ const MainWrapper = styled.div`
   }
 `;
 
-const SocialBtn = styled.div`
+export const SocialBtn = styled.div`
   cursor: pointer;
   background-color: white;
   border: solid 0.2rem var(--light-gray);
@@ -149,7 +70,7 @@ const SocialBtn = styled.div`
   }
 `;
 
-const Divider = styled.div`
+export const Divider = styled.div`
   display: flex;
   margin-top: 2rem;
   width: 22rem;
@@ -176,7 +97,7 @@ const Divider = styled.div`
   }
 `;
 
-const FormContainer = styled.form`
+export const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
   margin-top: 2rem;
@@ -217,7 +138,7 @@ const FormContainer = styled.form`
   }
 `;
 
-const SubmitBtn = styled.button`
+export const SubmitBtn = styled.button`
   white-space: nowrap;
   border: none;
   font: inherit;
@@ -241,7 +162,7 @@ const SubmitBtn = styled.button`
   }
 `;
 
-const SignInMsg = styled.div`
+export const SignInMsg = styled.div`
   margin-top: 2rem;
   font-weight: 500;
 
@@ -257,7 +178,7 @@ const SignInMsg = styled.div`
   }
 `;
 
-const Header = styled.div`
+export const Header = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 2rem;
@@ -267,7 +188,7 @@ const Header = styled.div`
   }
 `;
 
-const ErrorMsg = styled.div`
+export const ErrorMsg = styled.div`
   background: #ffe9ed;
   color: #ff5574;
   line-height: 1.6rem;
@@ -297,7 +218,7 @@ const ErrorMsg = styled.div`
   }
 `;
 
-const SpanError = styled.span`
+export const SpanError = styled.span`
   color: var(--main-red);
   font-size: 0.9rem;
   display: block;
