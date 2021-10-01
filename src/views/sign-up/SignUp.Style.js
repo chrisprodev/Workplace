@@ -220,6 +220,10 @@ export const ErrorMsg = styled.div`
   display: flex;
   justify-content: space-between;
 
+  p {
+    font-weight: 500;
+  }
+
   a {
     font-weight: 700;
   }

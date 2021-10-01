@@ -57,17 +57,15 @@ export const userAuth = () => {
   });
 };
 
-export const addUser = (user) => {
-  return new Promise(async (resolve) => {
-    try {
-      //* New User
-      const newUserData = await addNewUser(user);
-      await addMember(newUserData);
-      resolve();
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
-  });
+export const addUser = async (user) => {
+  try {
+    //* New User
+    const newUserData = await addNewUser(user);
+    //await addMember(newUserData);
+    return newUserData;
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
 };
 
 const addNewUser = async (user) => {
