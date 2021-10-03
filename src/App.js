@@ -1,7 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import SignUp from "./views/sign-up/SignUp";
-//import Login from "./views/login/Login";
+import Login from "./views/login/Login";
+import ChatContainer from "./views/chat/ChatContainer";
 
 const App = () => {
   return (
@@ -9,9 +10,11 @@ const App = () => {
       <Router>
         <Switch>
           <Route path="/channels">
-            <p>Chat Component</p>
+            <ChatContainer />
           </Route>
-          <Route path="/login">{/* <Login /> */}</Route>
+          <Route path="/login">
+            <Login />
+          </Route>
           <Route path="/">
             <SignUp />
           </Route>

@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import { googlePopUp, addNewUser } from "../../features/user/userSlice";
+import { useDispatch } from "react-redux";
 import GoogleColor from "../../components/icons/GoogleColor";
+import db from "../../firebase";
+import {
+  getAuth,
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
+import { addDoc, query, getDocs, where, collection } from "firebase/firestore";
+import { setUser } from "../../features/user/userSlice";
 import {
   Container,
   Divider,
@@ -17,24 +26,7 @@ import {
   SpanError,
   SubmitBtn,
 } from "./SignUp.Style";
-import db from "../../firebase";
-import {
-  getAuth,
-  onAuthStateChanged,
-  GoogleAuthProvider,
-  signInWithPopup,
-  createUserWithEmailAndPassword,
-} from "firebase/auth";
-import {
-  doc,
-  getDoc,
-  addDoc,
-  query,
-  getDocs,
-  where,
-  collection,
-} from "firebase/firestore";
-import { setUser, fetchUser } from "../../features/user/userSlice";
+import { channels } from "../../constants/mockData";
 
 const SignUp = () => {
   const dispatch = useDispatch();
@@ -83,24 +75,35 @@ const SignUp = () => {
       );
       const querySnapshot = await getDocs(q);
       if (querySnapshot.docs.length === 0) {
-        //* User not exist
-        addDoc(collection(db, "users"), {
-          name: result.user.displayName,
-          email: result.user.email,
-          photoURL: result.user.photoURL,
-          role: "Guest",
-          directMessages: [],
-        }).then(() => {
-          dispatch(
-            setUser({
-              name: result.user.displayName,
-              email: result.user.email,
-              photoURL: result.user.photoURL,
-              role: "Guest",
-              directMessages: [],
-            })
-          );
-          history.push("/channels");
+        addDoc(collection(db, "directMessages"), {
+          members: [
+            {
+              idUser: "K0I1jB4W8lARIOKprNLb",
+              name: "Christian L",
+              profile_pic:
+                "https://lh3.googleusercontent.com/a-/AOh14GhR5yAlfwNLgwRJwTnr-Z4egi3I-23bnr22soD07A=s96-c",
+              role: "Front-end Developer",
+            },
+          ],
+        }).then((docDMRef) => {
+          //* User not exist
+          addDoc(collection(db, "users"), {
+            name: result.user.displayName,
+            email: result.user.email,
+            photoURL: result.user.photoURL,
+            role: "Guest",
+            directMessages: [
+              {
+                idDM: docDMRef.id,
+                profile_pic:
+                  "https://lh3.googleusercontent.com/a-/AOh14GhR5yAlfwNLgwRJwTnr-Z4egi3I-23bnr22soD07A=s96-c",
+                role: "Front-End Developer",
+                userName: "Christian L",
+              },
+            ],
+          }).then(() => {
+            history.push("/channels");
+          });
         });
       }
     } catch (error) {
@@ -116,31 +119,40 @@ const SignUp = () => {
     );
 
     const querySnapshot = await getDocs(q);
-    console.log(querySnapshot.docs.length);
     if (querySnapshot.docs.length === 0) {
       //* Create user with email and pass
       const auth = getAuth();
       createUserWithEmailAndPassword(auth, userData.email, userData.pass)
         .then(async (userCredential) => {
           const user = userCredential.user;
+
+          const docDMRef = await addDoc(collection(db, "directMessages"), {
+            members: [
+              {
+                idUser: "K0I1jB4W8lARIOKprNLb",
+                name: "Christian L",
+                profile_pic:
+                  "https://lh3.googleusercontent.com/a-/AOh14GhR5yAlfwNLgwRJwTnr-Z4egi3I-23bnr22soD07A=s96-c",
+                role: "Front-end Developer",
+              },
+            ],
+          });
+
           const docRef = await addDoc(collection(db, "users"), {
             name: userData.name,
             email: user.email,
             photoURL: null,
             role: "Guest",
-            directMessages: [],
+            directMessages: [
+              {
+                idDM: docDMRef.id,
+                profile_pic:
+                  "https://lh3.googleusercontent.com/a-/AOh14GhR5yAlfwNLgwRJwTnr-Z4egi3I-23bnr22soD07A=s96-c",
+                role: "Front-End Developer",
+                userName: "Christian L",
+              },
+            ],
           });
-
-          dispatch(
-            setUser({
-              id: docRef.id,
-              name: userData.name,
-              email: user.email,
-              photoURL: null,
-              role: "Guest",
-              directMessages: [],
-            })
-          );
           history.push("/channels");
         })
         .catch((error) => {

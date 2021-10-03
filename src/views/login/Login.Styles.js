@@ -56,9 +56,6 @@ export const SocialBtn = styled.div`
 
   svg {
     margin-right: 1rem;
-    path {
-      fill: var(--main-black);
-    }
   }
 
   :hover {
