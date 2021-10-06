@@ -36,6 +36,7 @@ export const MainWrapper = styled.div`
 
 export const SocialBtn = styled.div`
   cursor: pointer;
+  user-select: none;
   background-color: white;
   border: solid 0.2rem var(--light-gray);
   border-radius: 0.5rem;
@@ -48,6 +49,25 @@ export const SocialBtn = styled.div`
   align-items: center;
   justify-content: center;
   transition: all 400ms cubic-bezier(0.075, 0.85, 0.15, 1);
+  pointer-events: ${(props) => props.loading === "true" && "none"};
+  animation: ${(props) =>
+    props.loading === "true"
+      ? "pulse 1.8s cubic-bezier(0.5, 1, 0, 0.5) infinite"
+      : "none"};
+
+  @keyframes pulse {
+    0% {
+      border-color: var(--light-gray);
+    }
+
+    50% {
+      border-color: var(--main-blue);
+    }
+
+    100% {
+      border-color: var(--light-gray);
+    }
+  }
 
   svg {
     margin-right: 1rem;

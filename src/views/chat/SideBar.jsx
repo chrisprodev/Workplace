@@ -1,20 +1,10 @@
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import { selectUser } from "../../features/user/userSlice";
 import { useSelector, useDispatch } from "react-redux";
+import { selectChannel, selectDM } from "../../features/chat/chatSlice";
 import GroupChat from "../../components/GroupChat";
-// import DMChat from "./DMChat";
-// import { storage } from "../firebase";
+import DMChat from "../../components/DMChat";
 import User from "../../components/User";
-// import {
-//   selectChannelId,
-//   selectUnSave,
-//   selectFiles,
-//   selectDirectMessageId,
-//   setUnSave,
-//   setUploadedFiles,
-//   setReset,
-// } from "../features/app/appSlice";
 import {
   Container,
   Section,
@@ -23,12 +13,11 @@ import {
   Logo,
   TitleBar,
 } from "./SideBar.Style";
-import { selectChannel } from "../../features/chat/chatSlice";
 
 const SideBar = () => {
   const user = useSelector(selectUser);
   const idChannel = useSelector(selectChannel);
-  // const IdDirectMessage = useSelector(selectDirectMessageId);
+  const idDM = useSelector(selectDM);
 
   // const unSave = useSelector(selectUnSave);
   // const uploadedFiles = useSelector(selectFiles);
@@ -60,9 +49,6 @@ const SideBar = () => {
   // };
 
   // useEffect(() => {
-  //   if (!user) {
-  //     history.push("/");
-  //   }
 
   //   if (unSave && uploadedFiles.length > 0) {
   //     deleteAllFiles();
@@ -89,7 +75,7 @@ const SideBar = () => {
             ))}
         </ChatWrap>
         <DMWraper>
-          {/* {user && user.channels && user.directMessages && (
+          {user && user.directMessages && (
             <>
               <Section>
                 <h4>Direct Messages</h4>
@@ -101,11 +87,11 @@ const SideBar = () => {
                   profile_pic={message.profile_pic}
                   userName={message.userName}
                   role={message.role}
-                  unreadMessages={message.unreadMessages}
+                  dmChat={idDM === message.idDM && idDM}
                 />
               ))}
             </>
-          )} */}
+          )}
         </DMWraper>
       </div>
       <TitleBar>

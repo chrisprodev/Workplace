@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-// import Chat from "./Chat";
-// import RightBar from "./RightBar";
+import Chat from "./Chat";
+import RightBar from "./RightBar";
 import SideBar from "./SideBar";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,16 +16,17 @@ const ChatContainer = () => {
 
   useEffect(() => {
     if (!user) {
-      setTimeout(() => {
-        const auth = getAuth();
-        onAuthStateChanged(auth, (authUser) => {
-          if (authUser) {
-            dispatch(fetchUser(authUser.email));
-          } else {
-            history.push("/");
+      const auth = getAuth();
+      onAuthStateChanged(auth, (authUser) => {
+        if (authUser) {
+          dispatch(fetchUser(authUser.email));
+          if (authUser.email) {
+            localStorage.setItem("uemail", authUser.email);
           }
-        });
-      }, 1000);
+        } else {
+          history.push("/");
+        }
+      });
     } else {
       setUserExist(true);
     }
@@ -35,8 +36,8 @@ const ChatContainer = () => {
     userExist && (
       <Container>
         <SideBar />
-        {/* <Chat />
-        <RightBar /> */}
+        <Chat />
+        <RightBar />
       </Container>
     )
   );

@@ -1,16 +1,39 @@
+import { collection, getDocs } from "@firebase/firestore";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { channels } from "../../constants/mockData";
+import db from "../../firebase";
 
 //* Async Thunk fetchChannel
 export const fetchChannel = createAsyncThunk(
   "user/fetchChannel",
   async (channelID, { rejectWithValue }) => {
-    // Get a document, forcing the SDK to fetch from the offline cache.
-    try {
-      //fetch channels
-    } catch (e) {
-      console.log("Error getting document:", e);
-    }
+    const subColRef = collection(db, "channels", channelID, "messages");
+    const querySnapshot = await getDocs(subColRef);
+    let messages = [];
+    querySnapshot.forEach((doc) => {
+      messages.push({
+        id: doc.id,
+        ...doc.data(),
+      });
+    });
+    return messages;
+  }
+);
+
+//* Async Thunk fetchDM
+export const fetchDM = createAsyncThunk(
+  "user/fetchDM",
+  async (dmID, { rejectWithValue }) => {
+    const subColRef = collection(db, "directMessages", dmID, "messages");
+    const querySnapshot = await getDocs(subColRef);
+    let messages = [];
+    querySnapshot.forEach((doc) => {
+      messages.push({
+        id: doc.id,
+        ...doc.data(),
+      });
+    });
+    return messages;
   }
 );
 
@@ -22,7 +45,7 @@ export const chatSlice = createSlice({
     channelName: channels[0].name,
     directMessageId: null,
     directMessageUser: null,
-    status: null,
+    messages: [],
   },
   reducers: {
     setChannel: (state, action) => {
@@ -38,25 +61,40 @@ export const chatSlice = createSlice({
       state.directMessageUser = action.payload.directMessageUser;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: {
     //* fetchChannel Status
-    builder.addCase(fetchChannel.fulfilled, (state, action) => {
+    [fetchChannel.fulfilled]: (state, action) => {
       state.status = "Success";
-      state.selectedChannel = action.payload;
-    });
-    builder.addCase(fetchChannel.pending, (state) => {
+      state.messages = action.payload;
+    },
+    [fetchChannel.pending]: (state) => {
       state.status = "Pending";
-    });
-    builder.addCase(fetchChannel.rejected, (state) => {
+    },
+    [fetchChannel.rejected]: (state) => {
       state.status = "Failed";
-    });
+    },
+    //* fetchDM Status
+    [fetchDM.fulfilled]: (state, action) => {
+      state.status = "Success";
+      state.messages = action.payload;
+    },
+    [fetchDM.pending]: (state) => {
+      state.status = "Pending";
+    },
+    [fetchDM.rejected]: (state) => {
+      state.status = "Failed";
+    },
   },
 });
 
 // Action creators
-export const { setChannel } = chatSlice.actions;
+export const { setChannel, setDirectMessage } = chatSlice.actions;
 
 // Selectors
 export const selectChannel = (state) => state.chat.selectedChannel;
+export const selectChannelName = (state) => state.chat.channelName;
+export const selectDM = (state) => state.chat.directMessageId;
+export const selectDMName = (state) => state.chat.directMessageUser;
+export const selectMessages = (state) => state.chat.messages;
 
 export default chatSlice.reducer;

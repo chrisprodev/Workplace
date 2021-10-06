@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useHistory, Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import GoogleColor from "../../components/icons/GoogleColor";
-import db from "../../firebase";
 import {
-  getAuth,
-  onAuthStateChanged,
-  GoogleAuthProvider,
-  signInWithPopup,
-  createUserWithEmailAndPassword,
-} from "firebase/auth";
-import { addDoc, query, getDocs, where, collection } from "firebase/firestore";
-import { setUser } from "../../features/user/userSlice";
+  createUserEmail,
+  createUserGoogle,
+  resetStatus,
+  selectCreateUserStatus,
+} from "../../features/user/userSlice";
 import {
   Container,
   Divider,
@@ -26,26 +22,29 @@ import {
   SpanError,
   SubmitBtn,
 } from "./SignUp.Style";
-import { channels } from "../../constants/mockData";
 
 const SignUp = () => {
-  const dispatch = useDispatch();
   let history = useHistory();
+  const dispatch = useDispatch();
+  const createUserStatus = useSelector(selectCreateUserStatus);
 
   const [error, setError] = useState(null);
   const [load, setLoad] = useState(false);
 
   useEffect(() => {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
+    if (createUserStatus === "Success") {
+      history.push("/channels");
+    } else {
+      const userEmail = localStorage.getItem("uemail");
+      if (userEmail) {
         history.push("/channels");
-      } else {
-        setLoad(true);
-        dispatch(setUser(null));
       }
-    });
-  }, [dispatch, history]);
+      setLoad(true);
+      if (createUserStatus === "Failed") {
+        setError("Email already in use. Try to ");
+      }
+    }
+  }, [createUserStatus, history]);
 
   const {
     register,
@@ -63,104 +62,17 @@ const SignUp = () => {
     setSignUpEmail(false);
   };
 
-  const popUpGoogle = async () => {
-    const auth = getAuth();
-    const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      //* check if user exist
-      const q = query(
-        collection(db, "users"),
-        where("email", "==", result.user.email)
-      );
-      const querySnapshot = await getDocs(q);
-      if (querySnapshot.docs.length === 0) {
-        addDoc(collection(db, "directMessages"), {
-          members: [
-            {
-              idUser: "K0I1jB4W8lARIOKprNLb",
-              name: "Christian L",
-              profile_pic:
-                "https://lh3.googleusercontent.com/a-/AOh14GhR5yAlfwNLgwRJwTnr-Z4egi3I-23bnr22soD07A=s96-c",
-              role: "Front-end Developer",
-            },
-          ],
-        }).then((docDMRef) => {
-          //* User not exist
-          addDoc(collection(db, "users"), {
-            name: result.user.displayName,
-            email: result.user.email,
-            photoURL: result.user.photoURL,
-            role: "Guest",
-            directMessages: [
-              {
-                idDM: docDMRef.id,
-                profile_pic:
-                  "https://lh3.googleusercontent.com/a-/AOh14GhR5yAlfwNLgwRJwTnr-Z4egi3I-23bnr22soD07A=s96-c",
-                role: "Front-End Developer",
-                userName: "Christian L",
-              },
-            ],
-          }).then(() => {
-            history.push("/channels");
-          });
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const popUpGoogle = () => {
+    dispatch(createUserGoogle());
   };
 
   const onSubmit = async (userData) => {
-    //* check if user exist
-    const q = query(
-      collection(db, "users"),
-      where("email", "==", userData.email)
-    );
+    dispatch(createUserEmail(userData));
+  };
 
-    const querySnapshot = await getDocs(q);
-    if (querySnapshot.docs.length === 0) {
-      //* Create user with email and pass
-      const auth = getAuth();
-      createUserWithEmailAndPassword(auth, userData.email, userData.pass)
-        .then(async (userCredential) => {
-          const user = userCredential.user;
-
-          const docDMRef = await addDoc(collection(db, "directMessages"), {
-            members: [
-              {
-                idUser: "K0I1jB4W8lARIOKprNLb",
-                name: "Christian L",
-                profile_pic:
-                  "https://lh3.googleusercontent.com/a-/AOh14GhR5yAlfwNLgwRJwTnr-Z4egi3I-23bnr22soD07A=s96-c",
-                role: "Front-end Developer",
-              },
-            ],
-          });
-
-          const docRef = await addDoc(collection(db, "users"), {
-            name: userData.name,
-            email: user.email,
-            photoURL: null,
-            role: "Guest",
-            directMessages: [
-              {
-                idDM: docDMRef.id,
-                profile_pic:
-                  "https://lh3.googleusercontent.com/a-/AOh14GhR5yAlfwNLgwRJwTnr-Z4egi3I-23bnr22soD07A=s96-c",
-                role: "Front-End Developer",
-                userName: "Christian L",
-              },
-            ],
-          });
-          history.push("/channels");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      setError("Email already in use. Try to Login");
-    }
+  const resetError = () => {
+    setError(null);
+    dispatch(resetStatus());
   };
 
   return (
@@ -191,12 +103,12 @@ const SignUp = () => {
                 <ErrorMsg>
                   <p>
                     {`${error} `}
-                    <Link to="/login" onClick={() => setError(null)}>
+                    <Link to="/login" onClick={() => resetError()}>
                       Log in.
                     </Link>
                   </p>
                   <svg
-                    onClick={() => setError(null)}
+                    onClick={() => resetError()}
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -256,14 +168,20 @@ const SignUp = () => {
                   {errors.pass && errors.pass.type === "minLength" && (
                     <SpanError>Minimun length 6 characters</SpanError>
                   )}
-                  <SubmitBtn type="submit" margin={signUpEmail}>
+                  <SubmitBtn
+                    type="submit"
+                    margin={signUpEmail}
+                    disabled={createUserStatus === "Pending"}
+                  >
                     Get started
                   </SubmitBtn>
                 </FormContainer>
               </MainWrapper>
               <SignInMsg>
                 I already have an account
-                <Link to="/login">Log in</Link>
+                <Link to="/login" onClick={() => error && resetError()}>
+                  Log in
+                </Link>
               </SignInMsg>
             </>
           ) : (
@@ -272,7 +190,10 @@ const SignUp = () => {
                 <h2>Sign up to Workplace</h2>
               </Header>
               <MainWrapper>
-                <SocialBtn onClick={popUpGoogle}>
+                <SocialBtn
+                  onClick={popUpGoogle}
+                  loading={createUserStatus === "Pending" ? "true" : "false"}
+                >
                   <GoogleColor />
                   Sign up with Google
                 </SocialBtn>
@@ -289,7 +210,9 @@ const SignUp = () => {
               </MainWrapper>
               <SignInMsg>
                 I already have an account
-                <Link to="/login">Log in</Link>
+                <Link to="/login" onClick={() => error && resetError()}>
+                  Log in
+                </Link>
               </SignInMsg>
             </>
           )}

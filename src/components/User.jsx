@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
-import { selectUser, setUser } from "../features/user/userSlice";
+import { resetStatus, selectUser, setUser } from "../features/user/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { getAuth, signOut } from "firebase/auth";
 
@@ -15,7 +15,9 @@ const User = () => {
     const auth = getAuth();
     signOut(auth)
       .then(() => {
+        localStorage.removeItem("uemail");
         dispatch(setUser(null));
+        dispatch(resetStatus());
         history.push("/");
       })
       .catch((error) => {
