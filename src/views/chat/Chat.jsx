@@ -1,36 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
+import InputChat from "../../components/InputChat";
+import ChatMessages from "../../components/ChatMessages";
 import {
-  fetchChannel,
-  fetchDM,
   selectChannel,
   selectChannelName,
   selectDM,
   selectDMName,
-  selectMessages,
 } from "../../features/chat/chatSlice";
-import InputChat from "../../components/InputChat";
-import ChatMessages from "../../components/ChatMessages";
 
 const Chat = () => {
   const [title, setTitle] = useState();
-  const dispatch = useDispatch();
+
   const channelName = useSelector(selectChannelName);
   const channelID = useSelector(selectChannel);
   const directMessageUser = useSelector(selectDMName);
   const dmID = useSelector(selectDM);
-  const messages = useSelector(selectMessages);
 
   useEffect(() => {
     if (channelName) {
       setTitle(channelName);
-      dispatch(fetchChannel(channelID));
     } else {
       setTitle(directMessageUser);
-      dispatch(fetchDM(dmID));
     }
-  }, [channelName, directMessageUser, dispatch, channelID, dmID]);
+  }, [channelName, directMessageUser]);
 
   return (
     <Container>
@@ -53,8 +47,8 @@ const Chat = () => {
         </HeaderWraper>
       </Header>
       <div>
-        <ChatMessages messages={messages} />
-        <InputChat />
+        <ChatMessages channelID={channelID} dmID={dmID} />
+        <InputChat channelID={channelID} dmID={dmID} />
       </div>
     </Container>
   );

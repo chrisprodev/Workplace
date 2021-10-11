@@ -1,19 +1,11 @@
 export const channels = [
   {
-    idChannel: "mwka8zQpxClwKosuNU8N",
+    idChannel: "QOjinw7NdErbUPRUe0MV",
     name: "Welcome",
   },
   {
-    idChannel: "l4hl6hNhoFfqQ1gi0Qof",
+    idChannel: "OMVUKPHaDExTXqcpWOzC",
     name: "Announcements",
-  },
-  {
-    idChannel: "I5HHmTeghZVVazZ7z1Rq",
-    name: "Designers",
-  },
-  {
-    idChannel: "iOTur3AN7ic253TnvwrX",
-    name: "Promo Video",
   },
 ];
 

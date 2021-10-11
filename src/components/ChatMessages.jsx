@@ -1,8 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import FileIcons from "./FileIcons";
+import {
+  fetchDM,
+  fetchChannel,
+  selectMessages,
+} from "../features/chat/chatSlice";
 
-const ChatMessages = ({ messages }) => {
+const ChatMessages = ({ channelID, dmID }) => {
+  const dispatch = useDispatch();
+  const messages = useSelector(selectMessages);
+
+  useEffect(() => {
+    if (channelID) {
+      dispatch(fetchChannel(channelID));
+    } else {
+      dispatch(fetchDM(dmID));
+    }
+  }, [channelID, dmID, dispatch]);
+
   return (
     <>
       <ChatWrapper>
@@ -12,13 +28,6 @@ const ChatMessages = ({ messages }) => {
             message.userName === initArray[i - 1 > 0 ? i - 1 : 0].userName ? (
               <OnlyText key={message.id}>
                 <TextMsg>{message?.message}</TextMsg>
-                {message.attachments && (
-                  <FileIconsWraper>
-                    {message.attachments.map((file, i) => (
-                      <FileIcons file={file} key={i} />
-                    ))}
-                  </FileIconsWraper>
-                )}
               </OnlyText>
             ) : (
               <MessageContainer key={message.id}>
@@ -44,8 +53,13 @@ const ChatMessages = ({ messages }) => {
                         `${new Date(
                           message.timestamp.seconds * 1000
                         ).toLocaleDateString("en-US", {
-                          weekday: "short",
-                        })} ${new Date(
+                          weekday: "long",
+                        })}
+                        ${new Date(
+                          message.timestamp.seconds * 1000
+                        ).toLocaleDateString("en-US", {
+                          day: "numeric",
+                        })}, ${new Date(
                           message.timestamp.seconds * 1000
                         ).toLocaleTimeString("en-US", {
                           hour: "2-digit",
@@ -57,13 +71,6 @@ const ChatMessages = ({ messages }) => {
                 <Message>
                   <p>{message?.message}</p>
                 </Message>
-                {message.attachments && (
-                  <FileIconsWraper>
-                    {message.attachments.map((file, i) => (
-                      <FileIcons file={file} key={i} />
-                    ))}
-                  </FileIconsWraper>
-                )}
               </MessageContainer>
             )
           )}
@@ -92,11 +99,11 @@ const MessageContainer = styled.div`
 `;
 
 const Message = styled.div`
+  max-width: 80%;
   p {
-    margin-top: 0.5rem;
+    margin-top: 1rem;
     font-weight: 400;
     line-height: 1.5rem;
-    width: 80%;
   }
 `;
 
@@ -120,13 +127,14 @@ const TitleWrapper = styled.div`
 `;
 
 const TextMsg = styled.p`
-  margin-top: 0.5rem;
+  //margin-top: 0.5rem;
   font-weight: 400;
   line-height: 1.6rem;
-  width: 80%;
 `;
 
-const OnlyText = styled.div``;
+const OnlyText = styled.div`
+  max-width: 80%;
+`;
 
 const FileIconsWraper = styled.div`
   display: flex;

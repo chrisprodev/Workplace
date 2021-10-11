@@ -8,6 +8,7 @@ import {
   collection,
   addDoc,
   updateDoc,
+  arrayUnion,
 } from "firebase/firestore";
 import { channels, myData } from "../../constants/mockData";
 import {
@@ -80,6 +81,19 @@ export const createUserGoogle = createAsyncThunk(
         ],
       });
 
+      const querySnapshot = await getDocs(collection(db, "channels"));
+      querySnapshot.forEach(async (channel) => {
+        const tempRef = doc(db, "channels", channel.id);
+        await updateDoc(tempRef, {
+          members: arrayUnion({
+            idUser: userDoc.id,
+            name: result.user.displayName,
+            profile_pic: result.user.photoURL,
+            role: "Guest",
+          }),
+        });
+      });
+
       return true;
     } else {
       return rejectWithValue("Email already in use");
@@ -143,6 +157,19 @@ export const createUserEmail = createAsyncThunk(
         ],
       });
 
+      const querySnapshot = await getDocs(collection(db, "channels"));
+      querySnapshot.forEach(async (channel) => {
+        const tempRef = doc(db, "channels", channel.id);
+        await updateDoc(tempRef, {
+          members: arrayUnion({
+            idUser: userDoc.id,
+            name: userData.name,
+            profile_pic: null,
+            role: "Guest",
+          }),
+        });
+      });
+
       return true;
     } else {
       return rejectWithValue("Email already in use");
@@ -198,6 +225,29 @@ export const loginUserEmail = createAsyncThunk(
     } else {
       return rejectWithValue("not user found");
     }
+  }
+);
+
+//* Async Thunk createDM
+export const createDM = createAsyncThunk(
+  "user/createDM",
+  async (dataMembers, { dispatch, getState }) => {
+    const docDMRef = await addDoc(collection(db, "directMessages"), {
+      members: [...dataMembers],
+    });
+
+    const tempUserRef = doc(db, "users", dataMembers[0].idUser);
+    await updateDoc(tempUserRef, {
+      directMessages: arrayUnion({
+        idDM: docDMRef.id,
+        userName: dataMembers[1].name,
+        profile_pic: dataMembers[1].profile_pic,
+        role: dataMembers[1].role,
+      }),
+    });
+
+    const state = getState();
+    return dispatch(fetchUser(state.user.user.email));
   }
 );
 
@@ -268,6 +318,16 @@ export const userSlice = createSlice({
       state.fetchStatus = "Pending";
     },
     [loginUserEmail.rejected]: (state) => {
+      state.fetchStatus = "Failed";
+    },
+    //* createDM Status
+    [createDM.fulfilled]: (state) => {
+      state.fetchStatus = "Success";
+    },
+    [createDM.pending]: (state) => {
+      state.fetchStatus = "Pending";
+    },
+    [createDM.rejected]: (state) => {
       state.fetchStatus = "Failed";
     },
   },

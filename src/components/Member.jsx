@@ -1,64 +1,35 @@
 import React from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
-//import db from "../firebase";
-//import firebase from "firebase";
+import { useDispatch, useSelector } from "react-redux";
+import { createDM, selectUser } from "../features/user/userSlice";
 
-const Member = ({ id, name, role, profile_pic }) => {
-  // const user = useSelector(selectUser);
-  // const IdDirectMessage = useSelector(selectDirectMessageId);
+const Member = ({ id, name, role, profile_pic, idDM }) => {
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
 
-  // const handleAddDirectMessage = () => {
-  //   if (user) {
-  //     db.collection("directMessages")
-  //       .add({
-  //         members: [
-  //           {
-  //             idUser: user.id,
-  //             profile_pic: user.profile_pic,
-  //             name: user.name,
-  //             role: user.role,
-  //           },
-  //           {
-  //             idUser: id,
-  //             profile_pic: profile_pic,
-  //             name: name,
-  //             role: role,
-  //           },
-  //         ],
-  //       })
-  //       .then((doc) => {
-  //         db.collection("users")
-  //           .doc(user.id)
-  //           .update({
-  //             directMessages: firebase.firestore.FieldValue.arrayUnion({
-  //               idDM: doc.id,
-  //               profile_pic: profile_pic,
-  //               unreadMessages: 0,
-  //               userName: name,
-  //               role: role,
-  //             }),
-  //           });
-
-  //         db.collection("users")
-  //           .doc(id)
-  //           .update({
-  //             directMessages: firebase.firestore.FieldValue.arrayUnion({
-  //               idDM: doc.id,
-  //               profile_pic: user.profile_pic,
-  //               unreadMessages: 0,
-  //               userName: user.name,
-  //               role: user.role,
-  //             }),
-  //           });
-  //       });
-  //   }
-  // };
+  const handleAddDirectMessage = () => {
+    if (user) {
+      dispatch(
+        createDM([
+          {
+            idUser: user.id,
+            profile_pic: user.profile_pic ? user.profile_pic : null,
+            name: user.name,
+            role: user.role,
+          },
+          {
+            idUser: id,
+            profile_pic: profile_pic ? profile_pic : null,
+            name: name,
+            role: role,
+          },
+        ])
+      );
+    }
+  };
 
   return (
-    <MainContainer
-    //onClick={handleAddDirectMessage}
-    >
+    <MainContainer>
       <Container>
         {profile_pic ? (
           <UserImg
@@ -83,8 +54,8 @@ const Member = ({ id, name, role, profile_pic }) => {
           </Wraper>
         </UserDetailsWrap>
       </Container>
-      {/* {!IdDirectMessage && user && user.id !== id ? (
-        <CircleIcon>
+      {!idDM && user && user.id !== id ? (
+        <CircleIcon onClick={handleAddDirectMessage}>
           <MessageIcon
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -99,7 +70,7 @@ const Member = ({ id, name, role, profile_pic }) => {
             />
           </MessageIcon>
         </CircleIcon>
-      ) : null} */}
+      ) : null}
     </MainContainer>
   );
 };
@@ -147,7 +118,9 @@ const CircleIcon = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  padding: 0.8rem;
+  //padding: 0.8rem;
+  width: 2.4rem;
+  height: 2.4rem;
   background: #f3f3f5;
   transition: all 250ms cubic-bezier(0.075, 0.85, 0.15, 1);
   :hover {

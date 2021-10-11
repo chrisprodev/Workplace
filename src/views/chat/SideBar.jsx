@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { selectUser } from "../../features/user/userSlice";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectChannel, selectDM } from "../../features/chat/chatSlice";
 import GroupChat from "../../components/GroupChat";
 import DMChat from "../../components/DMChat";
@@ -18,42 +18,6 @@ const SideBar = () => {
   const user = useSelector(selectUser);
   const idChannel = useSelector(selectChannel);
   const idDM = useSelector(selectDM);
-
-  // const unSave = useSelector(selectUnSave);
-  // const uploadedFiles = useSelector(selectFiles);
-
-  // const dispatch = useDispatch();
-
-  // let history = useHistory();
-
-  // const deleteAllFiles = async () => {
-  //   await Promise.all(
-  //     uploadedFiles.map(async (file) => {
-  //       // Create a storage reference from our storage service
-  //       const storageRef = storage.ref();
-  //       // Create a reference to the file to delete
-  //       const desertRef = storageRef.child(file.dir + file.name);
-  //       // Delete the file
-  //       await desertRef.delete().catch((error) => {
-  //         // Uh-oh, an error occurred!
-  //         console.log(error);
-  //       });
-
-  //       return file;
-  //     })
-  //   ).then(() => {
-  //     dispatch(setUploadedFiles([]));
-  //     dispatch(setUnSave(false));
-  //     dispatch(setReset(true));
-  //   });
-  // };
-
-  // useEffect(() => {
-
-  //   if (unSave && uploadedFiles.length > 0) {
-  //     deleteAllFiles();
-  //   }
-  // }, [idChannel, IdDirectMessage]);
 
   return (
     <Container>
