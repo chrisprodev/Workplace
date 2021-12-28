@@ -83,6 +83,10 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   border-left: solid 0.1rem #edf0f4;
+
+  @media screen and (max-width: 1280px) {
+    display: none;
+  }
 `;
 
 const Section = styled.div`

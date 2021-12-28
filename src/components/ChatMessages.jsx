@@ -85,6 +85,11 @@ const ChatWrapper = styled.div`
   padding: 1rem 2rem;
   max-height: calc(100vh - 377px);
   overflow-y: auto;
+
+  @media screen and (max-width: 1280px) {
+    height: 100vh;
+    max-height: calc(100vh - 346px);
+  }
 `;
 
 const UserDetails = styled.div`

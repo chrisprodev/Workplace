@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { setDirectMessage } from "../features/chat/chatSlice";
 import { useDispatch } from "react-redux";
 
-const DMChat = ({ idDM, profile_pic, userName, role, dmChat }) => {
+const DMChat = ({ idDM, profile_pic, userName, role, dmChat, onShowMenu }) => {
   const dispatch = useDispatch();
 
   const handleSetDm = () => {
@@ -13,11 +13,17 @@ const DMChat = ({ idDM, profile_pic, userName, role, dmChat }) => {
   };
 
   return (
-    <Container selected={dmChat && true} onClick={handleSetDm}>
+    <Container
+      selected={dmChat && true}
+      onClick={() => {
+        handleSetDm();
+        onShowMenu();
+      }}
+    >
       {profile_pic ? (
         <UserImg
           src={
-            role === "Front-end Developer"
+            profile_pic.includes("http")
               ? profile_pic
               : `/images/${profile_pic}`
           }

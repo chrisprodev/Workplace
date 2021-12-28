@@ -49,4 +49,9 @@ const Container = styled.div`
   display: grid;
   grid-template-columns: 22rem auto 24rem;
   height: 100vh;
+
+  @media screen and (max-width: 1280px) {
+    grid-template-columns: none;
+    height: unset;
+  }
 `;

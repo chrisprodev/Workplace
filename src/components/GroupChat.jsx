@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { setChannel } from "../features/chat/chatSlice";
 import { useDispatch } from "react-redux";
 
-const GroupChat = ({ title, channel, idChannel }) => {
+const GroupChat = ({ title, channel, idChannel, onShowMenu }) => {
   const dispatch = useDispatch();
 
   const handleSetChannel = () => {
@@ -11,7 +11,13 @@ const GroupChat = ({ title, channel, idChannel }) => {
   };
 
   return (
-    <Container selected={channel && true} onClick={handleSetChannel}>
+    <Container
+      selected={channel && true}
+      onClick={() => {
+        handleSetChannel();
+        onShowMenu();
+      }}
+    >
       <Hastag
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
