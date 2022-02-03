@@ -27,7 +27,6 @@ export const fetchUser = createAsyncThunk("user/fetchUser", async (email) => {
     return {
       id: querySnapshot.docs[0].id,
       ...querySnapshot.docs[0].data(),
-      channels: [...channels],
     };
   }
 });

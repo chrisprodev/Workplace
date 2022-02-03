@@ -1,14 +1,3 @@
-export const channels = [
-  {
-    idChannel: "QOjinw7NdErbUPRUe0MV",
-    name: "Welcome",
-  },
-  {
-    idChannel: "OMVUKPHaDExTXqcpWOzC",
-    name: "Announcements",
-  },
-];
-
 export const myData = {
   idUser: "K0I1jB4W8lARIOKprNLb",
   name: "Christian L",
