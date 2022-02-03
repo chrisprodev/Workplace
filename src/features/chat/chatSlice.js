@@ -78,8 +78,8 @@ export const addMessage = createAsyncThunk(
 export const chatSlice = createSlice({
   name: "channel",
   initialState: {
-    selectedChannel: channels[0].idChannel,
-    channelName: channels[0].name,
+    selectedChannel: "QOjinw7NdErbUPRUe0MV",
+    channelName: "Welcome",
     directMessageId: null,
     directMessageUser: null,
     messages: [],

@@ -132,9 +132,9 @@ const TitleWrapper = styled.div`
 `;
 
 const TextMsg = styled.p`
-  //margin-top: 0.5rem;
   font-weight: 400;
   line-height: 1.6rem;
+  margin-top: 0.8rem;
 `;
 
 const OnlyText = styled.div`

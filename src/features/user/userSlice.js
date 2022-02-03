@@ -10,7 +10,7 @@ import {
   updateDoc,
   arrayUnion,
 } from "firebase/firestore";
-import { channels, myData } from "../../constants/mockData";
+import { myData } from "../../constants/mockData";
 import {
   createUserWithEmailAndPassword,
   getAuth,
