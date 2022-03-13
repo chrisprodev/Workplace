@@ -83,8 +83,24 @@ export default ChatMessages;
 
 const ChatWrapper = styled.div`
   padding: 1rem 2rem;
-  max-height: calc(100vh - 377px);
+  max-height: calc(100vh - 274px);
   overflow-y: auto;
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: var(--light-gray);
+    -webkit-border-radius: 1rem;
+    border-radius: 1rem;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 1rem;
+    border-radius: 1rem;
+    background: var(--middle-gray);
+  }
 
   @media screen and (max-width: 1280px) {
     height: 100vh;
