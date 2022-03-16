@@ -33,13 +33,7 @@ const ChatMessages = ({ channelID, dmID }) => {
               <MessageContainer key={message.id}>
                 <UserDetails>
                   {message.profile_pic ? (
-                    <UserImg
-                      src={
-                        message.profile_pic.includes("avatar")
-                          ? `/images/${message.profile_pic}`
-                          : message.profile_pic
-                      }
-                    />
+                    <UserImg src={message.profile_pic && message.profile_pic} />
                   ) : (
                     <UserNamePic>
                       {message.userName.charAt(0).toUpperCase() +
@@ -125,6 +119,10 @@ const Message = styled.div`
     margin-top: 1rem;
     font-weight: 400;
     line-height: 1.5rem;
+  }
+
+  @media screen and (max-width: 1280px) {
+    max-width: unset;
   }
 `;
 

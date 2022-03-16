@@ -32,15 +32,7 @@ const Member = ({ id, name, role, profile_pic, idDM }) => {
     <MainContainer>
       <Container>
         {profile_pic ? (
-          <UserImg
-            src={
-              role === "Guest"
-                ? profile_pic
-                : role === "Front-end Developer"
-                ? profile_pic
-                : `/images/${profile_pic}`
-            }
-          />
+          <UserImg src={profile_pic && profile_pic} />
         ) : (
           <UserNamePic>
             {name.charAt(0).toUpperCase() + name.substring(1, 2)}
