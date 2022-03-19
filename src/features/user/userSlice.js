@@ -10,7 +10,7 @@ import {
   updateDoc,
   arrayUnion,
 } from "firebase/firestore";
-import { myData } from "../../constants/mockData";
+import { myData, channelsData } from "../../constants/mockData";
 import {
   createUserWithEmailAndPassword,
   getAuth,
@@ -54,6 +54,7 @@ export const createUserGoogle = createAsyncThunk(
         provider: "Google",
         role: "Guest",
         directMessages: [],
+        channels: [...channelsData],
       });
 
       const docDMRef = await addDoc(collection(db, "directMessages"), {

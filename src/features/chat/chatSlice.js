@@ -7,7 +7,6 @@ import {
   query,
 } from "@firebase/firestore";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { channels } from "../../constants/mockData";
 import db from "../../firebase";
 
 //* Async Thunk fetchChannel
