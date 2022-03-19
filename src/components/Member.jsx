@@ -86,6 +86,7 @@ const Container = styled.div`
 const UserImg = styled.img`
   width: 2.4rem;
   height: 2.4rem;
+  border-radius:50% ;
 `;
 
 const UserDetailsWrap = styled.div`
